@@ -61,11 +61,13 @@ allprojects { project ->
             events "passed", "skipped", "failed", "standardOut", "standardError"
         }
     }
+    group "com.didiglobal.booster"
+    def publishVersion =  '4.13.3'
 
     def configurePublication = { MavenPublication publication ->
         groupId = project.group
         artifactId = project.name
-        version = project.version
+        version = publishVersion
 
         if ("mavenJava" == publication.name) {
             from components.java
@@ -119,13 +121,13 @@ allprojects { project ->
         }
 
 
-        if (!project.hasProperty("signing.skip")) {
-            apply plugin: 'signing'
-
-            project.signing {
-                sign publication
-            }
-        }
+//        if (!project.hasProperty("signing.skip")) {
+//            apply plugin: 'signing'
+//
+//            project.signing {
+//                sign publication
+//            }
+//        }
     }
 
     project.afterEvaluate {
@@ -159,15 +161,8 @@ nexusPublishing {
             stagingProfileId = OSSRH_STAGING_PROFILE_ID
         }
     }
-
-    clientTimeout = Duration.ofSeconds(300)
-    connectTimeout = Duration.ofSeconds(60)
-
-    transitionCheckOptions {
-        maxRetries.set(3000)
-        delayBetween.set(Duration.ofMillis(3000))
-    }
 }
+
 
 task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation') {
     subProjects = [
